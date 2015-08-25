@@ -507,7 +507,10 @@ std::vector<PathInfo> PathAlgorithm::FormPath(const uint32_t dest,
   for(auto edgelabel_index = dest; edgelabel_index != kInvalidLabel;
       edgelabel_index = edgelabels_[edgelabel_index].predecessor()) {
     const EdgeLabel& edgelabel = edgelabels_[edgelabel_index];
-    path.emplace_back(edgelabel.mode(), edgelabel.cost().secs,
+    // We have to special-case the last (destination) edge.
+    auto secs = edgelabel_index == dest ? best_destination_.second.secs :
+                                          edgelabel.cost().secs;
+    path.emplace_back(edgelabel.mode(), secs,
                       edgelabel.edgeid(), edgelabel.tripid());
   }
 
